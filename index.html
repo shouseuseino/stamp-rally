@@ -3,89 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>スタンプラリー</title>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 30px 15px;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 30px 20px;
+      border-radius: 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    .stamp-count {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 25px 0;
+    }
+
+    #reader {
+      width: 100%;
+      max-width: 350px;
+      margin: 20px auto;
+    }
+
+    #message {
+      font-size: 20px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    #qr-message {
+      font-size: 18px;
+      margin: 15px 0;
+    }
+
+    .stamps {
+      margin-top: 30px;
+    }
+
+    .stamp {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      background: #eee;
+    }
+
+    .get {
+      background: #d9ffd9;
+    }
+  </style>
 </head>
 
 <body>
 
   <div class="container">
+
     <h1>🎉 スタンプラリー</h1>
 
-    <p>スタンプを集めよう！</p>
+    <p>QRコードを読み取ってスタンプを集めよう！</p>
 
     <div class="stamp-count">
       スタンプ <span id="count">0</span> / 5
     </div>
 
-    <div id="message"></div>
+    <div id="message">
+      QRコードを読み取ってください
+    </div>
 
-<div class="spots">
-    <button onclick="startQR(1)">スポット1<br>QRコードを読み取る</button>
-    <button onclick="startQR(2)">スポット2<br>QRコードを読み取る</button>
-    <button onclick="startQR(3)">スポット3<br>QRコードを読み取る</button>
-    <button onclick="startQR(4)">スポット4<br>QRコードを読み取る</button>
-    <button onclick="startQR(5)">スポット5<br>QRコードを読み取る</button>
-</div>
+    <!-- QRコード読み取り画面 -->
+    <div id="reader"></div>
 
-<div id="reader" style="width:300px; margin:20px auto;"></div>
-<div id="qr-message"></div>
+    <div id="qr-message"></div>
+
+    <!-- スタンプ一覧 -->
+    <div class="stamps">
+
+      <div id="stamp1" class="stamp">
+        スポット1
+      </div>
+
+      <div id="stamp2" class="stamp">
+        スポット2
+      </div>
+
+      <div id="stamp3" class="stamp">
+        スポット3
+      </div>
+
+      <div id="stamp4" class="stamp">
+        スポット4
+      </div>
+
+      <div id="stamp5" class="stamp">
+        スポット5
+      </div>
+
+    </div>
+
   </div>
 
-  <script src="script.js"></script>
+  <!-- QRコード読み取りライブラリ -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 
-<script>
-let currentSpot = null;
-let scanner = null;
+  <!-- 自分のJavaScript -->
+  <script src="script.js"></script>
 
-function startQR(spot) {
-    currentSpot = spot;
-
-    document.getElementById("qr-message").textContent =
-        "スポット" + spot + "のQRコードを読み取ってください";
-
-    scanner = new Html5Qrcode("reader");
-
-    scanner.start(
-        { facingMode: "environment" },
-        {
-            fps: 10,
-            qrbox: 250
-        },
-        function(decodedText) {
-            checkQR(decodedText);
-        },
-        function(errorMessage) {
-            // 読み取り中のエラーなので何もしない
-        }
-    ).catch(function(err) {
-        document.getElementById("qr-message").textContent =
-            "カメラを起動できませんでした";
-    });
-}
-
-function checkQR(code) {
-
-    const correctCode = "stamp-" + currentSpot;
-
-    if (code === correctCode) {
-
-        scanner.stop().then(function() {
-
-            document.getElementById("qr-message").textContent =
-                "🎉 スポット" + currentSpot + "のスタンプGET！";
-
-            getStamp(currentSpot);
-
-        });
-
-    } else {
-
-        document.getElementById("qr-message").textContent =
-            "❌ 違うQRコードです。もう一度読み取ってください。";
-    }
-}
-</script>
 </body>
 </html>
