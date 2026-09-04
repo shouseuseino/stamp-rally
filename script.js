@@ -1,93 +1,224 @@
+// ==========================
+// スタンプデータ
+// ==========================
+
 let stamps = JSON.parse(localStorage.getItem("stamps")) || [];
 
-// URLからスポット番号を取得
-const params = new URLSearchParams(window.location.search);
-const spot = Number(params.get("spot"));
 
-// スタンプを取得する
+// ==========================
+// スタンプ表示
+// ==========================
+
+function updateDisplay() {
+
+  // スタンプ数
+  document.getElementById("count").textContent = stamps.length;
+
+  // スタンプの色を変更
+  for (let i = 1; i <= 5; i++) {
+
+    const stampElement = document.getElementById("stamp" + i);
+
+    if (stamps.includes(i)) {
+      stampElement.classList.add("get");
+      stampElement.textContent = "🎉 スポット" + i + " スタンプGET！";
+    } else {
+      stampElement.classList.remove("get");
+      stampElement.textContent = "スポット" + i;
+    }
+
+  }
+
+  // コンプリート
+  if (stamps.length === 5) {
+
+    document.getElementById("message").textContent =
+      "🏆 コンプリート！おめでとう！";
+
+  }
+
+}
+
+
+// ==========================
+// スタンプをGET
+// ==========================
+
 function getStamp(number) {
 
-  // すでに取得済み
+  // すでに取得している場合
   if (stamps.includes(number)) {
-    alert("このスタンプはすでに取得しています！");
+
+    document.getElementById("message").textContent =
+      "このスタンプはすでにGETしています！";
+
     return;
   }
+
 
   // スタンプを追加
   stamps.push(number);
 
-  // 保存
-  localStorage.setItem("stamps", JSON.stringify(stamps));
 
+  // 保存
+  localStorage.setItem(
+    "stamps",
+    JSON.stringify(stamps)
+  );
+
+
+  // 表示更新
   updateDisplay();
 
+
+  // メッセージ
   document.getElementById("message").textContent =
-    "🎉 スタンプGET！";
+    "🎉 スポット" + number + " のスタンプGET！";
+
 
   // 5個全部集めた
   if (stamps.length === 5) {
+
     document.getElementById("message").textContent =
       "🏆 コンプリート！おめでとう！";
+
   }
+
 }
 
-// 表示を更新
-function updateDisplay() {
-  document.getElementById("count").textContent = stamps.length;
-}
 
-updateDisplay();
+// ==========================
+// QRコード読み取り
+// ==========================
 
-// QRコードから来た場合
-if (spot >= 1 && spot <= 5) {
-  getStamp(spot);
-}
-let currentSpot = null;
 let scanner = null;
+let scanning = false;
 
-function startQR(spot) {
-    currentSpot = spot;
+
+// QRコードを読み始める
+function startQR() {
+
+  if (scanning) {
+    return;
+  }
+
+  scanning = true;
+
+  document.getElementById("qr-message").textContent =
+    "📷 QRコードをカメラに映してください";
+
+
+  scanner = new Html5Qrcode("reader");
+
+
+  scanner.start(
+
+    {
+      facingMode: "environment"
+    },
+
+    {
+      fps: 10,
+      qrbox: 250
+    },
+
+    function(decodedText) {
+
+      checkQR(decodedText);
+
+    },
+
+    function(errorMessage) {
+
+      // QRコードが見つからないときは何もしない
+
+    }
+
+  ).catch(function(error) {
+
+    scanning = false;
 
     document.getElementById("qr-message").textContent =
-        "スポット" + spot + "のQRコードを読み取ってください";
+      "❌ カメラを起動できませんでした";
 
-    scanner = new Html5Qrcode("reader");
+    console.log(error);
 
-    scanner.start(
-        { facingMode: "environment" },
-        {
-            fps: 10,
-            qrbox: 250
-        },
-        function(decodedText) {
-            checkQR(decodedText);
-        },
-        function(errorMessage) {
-            // 読み取り中なので何もしない
-        }
-    ).catch(function(err) {
-        document.getElementById("qr-message").textContent =
-            "カメラを起動できませんでした";
-    });
+  });
+
 }
 
+
+// ==========================
+// QRコードを確認
+// ==========================
+
 function checkQR(code) {
-    const correctCode = "stamp-" + currentSpot;
 
-    if (code === correctCode) {
+  console.log("読み取ったQR:", code);
 
-        scanner.stop().then(function() {
 
-            document.getElementById("qr-message").textContent =
-                "🎉 スポット" + currentSpot + "のスタンプGET！";
+  // QRコードの内容
+  // stamp-1
+  // stamp-2
+  // stamp-3
+  // stamp-4
+  // stamp-5
 
-            getStamp(currentSpot);
+  const match = code.match(/^stamp-([1-5])$/);
 
-        });
+
+  // 正しいQRコードだった場合
+  if (match) {
+
+    const spot = Number(match[1]);
+
+
+    // カメラ停止
+    if (scanner) {
+
+      scanner.stop().then(function() {
+
+        scanning = false;
+
+        document.getElementById("qr-message").textContent =
+          "🎉 スポット" + spot + " のQRコードを確認しました！";
+
+        getStamp(spot);
+
+      });
 
     } else {
 
-        document.getElementById("qr-message").textContent =
-            "❌ 違うQRコードです";
+      getStamp(spot);
+
     }
+
+  }
+
+  // 間違ったQRコード
+  else {
+
+    document.getElementById("qr-message").textContent =
+      "❌ このスタンプラリーのQRコードではありません";
+
+  }
+
 }
+
+
+// ==========================
+// 最初に表示
+// ==========================
+
+updateDisplay();
+
+
+// ==========================
+// ページを開いたらQR読み取り開始
+// ==========================
+
+window.addEventListener("load", function() {
+
+  startQR();
+
+});
