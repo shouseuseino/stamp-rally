@@ -42,3 +42,52 @@ updateDisplay();
 if (spot >= 1 && spot <= 5) {
   getStamp(spot);
 }
+let currentSpot = null;
+let scanner = null;
+
+function startQR(spot) {
+    currentSpot = spot;
+
+    document.getElementById("qr-message").textContent =
+        "スポット" + spot + "のQRコードを読み取ってください";
+
+    scanner = new Html5Qrcode("reader");
+
+    scanner.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: 250
+        },
+        function(decodedText) {
+            checkQR(decodedText);
+        },
+        function(errorMessage) {
+            // 読み取り中なので何もしない
+        }
+    ).catch(function(err) {
+        document.getElementById("qr-message").textContent =
+            "カメラを起動できませんでした";
+    });
+}
+
+function checkQR(code) {
+    const correctCode = "stamp-" + currentSpot;
+
+    if (code === correctCode) {
+
+        scanner.stop().then(function() {
+
+            document.getElementById("qr-message").textContent =
+                "🎉 スポット" + currentSpot + "のスタンプGET！";
+
+            getStamp(currentSpot);
+
+        });
+
+    } else {
+
+        document.getElementById("qr-message").textContent =
+            "❌ 違うQRコードです";
+    }
+}
