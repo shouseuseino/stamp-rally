@@ -1,3 +1,15 @@
+:root {
+  --background-color: #fff4d6;
+  --text-color: #333333;
+  --title-color: #ff6b35;
+  --button-color: #ff8c42;
+  --button-text-color: #ffffff;
+  --stamp-get-color: #d8f8d8;
+  --stamp-color: #eeeeee;
+  --normal-font-size: 18px;
+  --title-font-size: 36px;
+  --font-family: sans-serif;
+}
 body {
   margin: 0;
   font-family: sans-serif;
