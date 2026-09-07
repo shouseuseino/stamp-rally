@@ -50,6 +50,20 @@
       margin: 15px 0;
     }
 
+    .qr-button {
+      font-size: 20px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    .qr-button:hover {
+      opacity: 0.8;
+    }
+
     .stamps {
       margin-top: 30px;
     }
@@ -80,11 +94,16 @@
     </div>
 
     <div id="message">
-      QRコードを読み取ってください
+      「QRを読み取る」を押してください
     </div>
 
+    <!-- QR読み取りボタン -->
+    <button class="qr-button" onclick="startQR()">
+      📷 QRを読み取る
+    </button>
+
     <!-- QRコード読み取り画面 -->
-    <div id="reader"></div>
+    <div id="reader" style="display:none;"></div>
 
     <div id="qr-message"></div>
 
