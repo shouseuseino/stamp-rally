@@ -1,16 +1,20 @@
 /* ==========================
    🎨 ゲームデザイン設定
-   ここだけ変更すればOK
+   ここだけ変更すればOK！
    ========================== */
 
 :root {
   --background-color: #fff4d6;
+  --container-color: #ffffff;
+
   --text-color: #333333;
   --title-color: #ff6b35;
+
   --button-color: #ff8c42;
   --button-text-color: #ffffff;
-  --stamp-get-color: #d8f8d8;
+
   --stamp-color: #eeeeee;
+  --stamp-get-color: #d8f8d8;
 
   --normal-font-size: 18px;
   --title-font-size: 36px;
@@ -25,22 +29,30 @@
 
 body {
   margin: 0;
+  padding: 30px 15px;
+
   font-family: var(--font-family);
-  background: var(--background-color);
-  color: var(--text-color);
   font-size: var(--normal-font-size);
+
+  color: var(--text-color);
+  background: var(--background-color);
+
   text-align: center;
 }
 
 
 /* ==========================
-   全体
+   ゲーム画面
    ========================== */
 
 .container {
   max-width: 500px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  margin: auto;
+  padding: 30px 20px;
+
+  background: var(--container-color);
+
+  border-radius: 20px;
 }
 
 
@@ -59,58 +71,14 @@ h1 {
    ========================== */
 
 .stamp-count {
-  margin-top: 30px;
+  margin: 25px 0;
   padding: 20px;
-  background: white;
+
+  font-size: 28px;
+  font-weight: bold;
+
+  background: var(--container-color);
   border-radius: 15px;
-  font-size: 24px;
-}
-
-
-/* ==========================
-   スポット
-   ========================== */
-
-.spots {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-
-/* ==========================
-   ボタン
-   ========================== */
-
-button {
-  padding: 18px;
-  font-size: 18px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-
-  background: var(--button-color);
-  color: var(--button-text-color);
-}
-
-
-/* ==========================
-   スタンプ
-   ========================== */
-
-.stamp {
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
-  background: var(--stamp-color);
-}
-
-
-/* スタンプGET後 */
-
-.get {
-  background: var(--stamp-get-color);
 }
 
 
@@ -119,6 +87,74 @@ button {
    ========================== */
 
 #message {
+  margin: 20px 0;
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#qr-message {
+  margin: 15px 0;
+  font-size: 18px;
+}
+
+
+/* ==========================
+   QRボタン
+   ========================== */
+
+.qr-button {
+  padding: 15px 30px;
+
+  font-size: 20px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: var(--button-color);
+  color: var(--button-text-color);
+
+  cursor: pointer;
+}
+
+.qr-button:hover {
+  opacity: 0.8;
+}
+
+
+/* ==========================
+   QRカメラ
+   ========================== */
+
+#reader {
+  width: 100%;
+  max-width: 350px;
+  margin: 20px auto;
+}
+
+
+/* ==========================
+   スタンプ一覧
+   ========================== */
+
+.stamps {
   margin-top: 30px;
-  font-size: 24px;
+}
+
+.stamp {
+  padding: 15px;
+  margin: 10px 0;
+
+  border-radius: 10px;
+
+  background: var(--stamp-color);
+}
+
+
+/* ==========================
+   スタンプGET
+   ========================== */
+
+.get {
+  background: var(--stamp-get-color);
 }
