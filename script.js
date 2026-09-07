@@ -20,13 +20,20 @@ function updateDisplay() {
     const stampElement = document.getElementById("stamp" + i);
 
     if (stamps.includes(i)) {
-      stampElement.classList.add("get");
-      stampElement.textContent = "🎉 スポット" + i + " スタンプGET！";
-    } else {
-      stampElement.classList.remove("get");
-      stampElement.textContent = "スポット" + i;
-    }
 
+      stampElement.classList.add("get");
+
+      stampElement.textContent =
+        "🎉 スポット" + i + " スタンプGET！";
+
+    } else {
+
+      stampElement.classList.remove("get");
+
+      stampElement.textContent =
+        "スポット" + i;
+
+    }
   }
 
   // コンプリート
@@ -34,9 +41,7 @@ function updateDisplay() {
 
     document.getElementById("message").textContent =
       "🏆 コンプリート！おめでとう！";
-
   }
-
 }
 
 
@@ -55,10 +60,8 @@ function getStamp(number) {
     return;
   }
 
-
   // スタンプを追加
   stamps.push(number);
-
 
   // 保存
   localStorage.setItem(
@@ -66,24 +69,19 @@ function getStamp(number) {
     JSON.stringify(stamps)
   );
 
-
   // 表示更新
   updateDisplay();
-
 
   // メッセージ
   document.getElementById("message").textContent =
     "🎉 スポット" + number + " のスタンプGET！";
-
 
   // 5個全部集めた
   if (stamps.length === 5) {
 
     document.getElementById("message").textContent =
       "🏆 コンプリート！おめでとう！";
-
   }
-
 }
 
 
@@ -95,21 +93,27 @@ let scanner = null;
 let scanning = false;
 
 
+// ==========================
 // QRコードを読み始める
+// ==========================
+
 function startQR() {
 
+  // すでに読み取り中なら何もしない
   if (scanning) {
     return;
   }
 
   scanning = true;
 
+  // QR読み取り画面を表示
+  document.getElementById("reader").style.display = "block";
+
   document.getElementById("qr-message").textContent =
     "📷 QRコードをカメラに映してください";
 
-
+  // カメラを起動
   scanner = new Html5Qrcode("reader");
-
 
   scanner.start(
 
@@ -138,13 +142,14 @@ function startQR() {
 
     scanning = false;
 
+    document.getElementById("reader").style.display = "none";
+
     document.getElementById("qr-message").textContent =
       "❌ カメラを起動できませんでした";
 
     console.log(error);
 
   });
-
 }
 
 
@@ -156,8 +161,7 @@ function checkQR(code) {
 
   console.log("読み取ったQR:", code);
 
-
-  // QRコードの内容
+  // 正しいQRコード
   // stamp-1
   // stamp-2
   // stamp-3
@@ -166,12 +170,10 @@ function checkQR(code) {
 
   const match = code.match(/^stamp-([1-5])$/);
 
-
   // 正しいQRコードだった場合
   if (match) {
 
     const spot = Number(match[1]);
-
 
     // カメラ停止
     if (scanner) {
@@ -180,11 +182,24 @@ function checkQR(code) {
 
         scanning = false;
 
-        document.getElementById("qr-message").textContent =
-          "🎉 スポット" + spot + " のQRコードを確認しました！";
+        // カメラ画面を隠す
+        document.getElementById("reader").style.display = "none";
 
+        document.getElementById("qr-message").textContent =
+          "🎉 QRコードを確認しました！";
+
+        // スタンプGET
         getStamp(spot);
 
+      }).catch(function(error) {
+
+        console.log(error);
+
+        scanning = false;
+
+        document.getElementById("reader").style.display = "none";
+
+        getStamp(spot);
       });
 
     } else {
@@ -202,7 +217,6 @@ function checkQR(code) {
       "❌ このスタンプラリーのQRコードではありません";
 
   }
-
 }
 
 
@@ -211,14 +225,3 @@ function checkQR(code) {
 // ==========================
 
 updateDisplay();
-
-
-// ==========================
-// ページを開いたらQR読み取り開始
-// ==========================
-
-window.addEventListener("load", function() {
-
-  startQR();
-
-});
